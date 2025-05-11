@@ -14,10 +14,17 @@ public class PlayerController : MonoBehaviour
     [Header("Effects")]
     public ParticleSystem thrustEffect;
     public AudioSource thrustAudio;
+    public float particleCooldown = 0.1f; // Minimum time between particle toggles
+    private float lastParticleToggle;
 
     void Start()
     {
         currentFuel = maxFuel;
+        if (thrustEffect)
+        {
+            var emission = thrustEffect.emission;
+            emission.enabled = false;
+        }
     }
 
     void Update()
@@ -32,17 +39,27 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(transform.up * thrustForce);
             currentFuel -= fuelConsumptionRate * Time.deltaTime;
 
-            // Play effects
-            if (thrustEffect && !thrustEffect.isPlaying)
-                thrustEffect.Play();
+            // Play effects with cooldown
+            if (thrustEffect && Time.time - lastParticleToggle >= particleCooldown)
+            {
+                var emission = thrustEffect.emission;
+                emission.enabled = true;
+                if (!thrustEffect.isPlaying)
+                    thrustEffect.Play();
+                lastParticleToggle = Time.time;
+            }
+            
             if (thrustAudio && !thrustAudio.isPlaying)
                 thrustAudio.Play();
         }
         else
         {
             // Stop effects
-            if (thrustEffect && thrustEffect.isPlaying)
-                thrustEffect.Stop();
+            if (thrustEffect)
+            {
+                var emission = thrustEffect.emission;
+                emission.enabled = false;
+            }
             if (thrustAudio && thrustAudio.isPlaying)
                 thrustAudio.Stop();
         }

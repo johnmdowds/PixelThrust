@@ -50,7 +50,9 @@
     <Compile Include="Assets/Scripts/BlockBrush.cs" />
     <Compile Include="Assets/Scripts/PlayerController.cs" />
     <Compile Include="Assets/Scripts/DestructibleBlock.cs" />
+    <Compile Include="Assets/Scripts/BackgroundGrid.cs" />
     <Compile Include="Assets/Scripts/FuelUI.cs" />
+    <Compile Include="Assets/Scripts/LevelBoundary.cs" />
     <Compile Include="Assets/Scripts/MainMenu.cs" />
     <Compile Include="Assets/Scripts/CameraFollow.cs" />
     <Compile Include="Assets/Scripts/LandingDetector.cs" />
