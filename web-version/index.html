@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixelThrust - Web Version</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle at center, #001122 0%, #000000 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Orbitron', 'Courier New', monospace;
+            color: white;
+            overflow: hidden;
+        }
+        
+        /* Animated starfield background */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        /* Main Menu Styles */
+        #mainMenu {
+            text-align: center;
+            z-index: 100;
+            animation: fadeIn 2s ease-in;
+        }
+        
+        #mainMenu.hidden {
+            display: none;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .logo {
+            font-size: 4em;
+            font-weight: 900;
+            margin-bottom: 0.2em;
+            text-shadow: 0 0 20px #00ff88, 0 0 40px #00ff88, 0 0 60px #00ff88;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #00ff88, 0 0 40px #00ff88, 0 0 60px #00ff88; }
+            to { text-shadow: 0 0 30px #00ff88, 0 0 50px #00ff88, 0 0 70px #00ff88; }
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            color: #888;
+            margin-bottom: 2em;
+            font-weight: 400;
+        }
+        
+        .menu-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+            align-items: center;
+        }
+        
+        .menu-button {
+            background: linear-gradient(45deg, #003366, #006699);
+            border: 2px solid #00ff88;
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-family: 'Orbitron', monospace;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+            min-width: 300px;
+        }
+        
+        .menu-button:hover {
+            background: linear-gradient(45deg, #006699, #0099cc);
+            box-shadow: 0 0 20px #00ff88;
+            transform: translateY(-2px);
+        }
+        
+        .menu-button:active {
+            transform: translateY(0);
+        }
+        
+        .menu-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .menu-button:hover::before {
+            left: 100%;
+        }
+        
+        .coming-soon {
+            opacity: 0.5;
+            cursor: not-allowed !important;
+        }
+        
+        .coming-soon:hover {
+            background: linear-gradient(45deg, #003366, #006699) !important;
+            box-shadow: none !important;
+            transform: none !important;
+        }
+        
+        /* Game Container Styles */
+        #gameContainer {
+            position: relative;
+            border: 2px solid #333;
+            display: none;
+        }
+        
+        #gameContainer.active {
+            display: block;
+        }
+        
+        #gameCanvas {
+            display: block;
+            background: #111;
+        }
+        
+        #ui {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+        }
+        
+        #fuelBar {
+            width: 200px;
+            height: 20px;
+            border: 2px solid #fff;
+            margin-bottom: 10px;
+        }
+        
+        #fuelFill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00);
+            transition: width 0.1s;
+        }
+        
+        #controls {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        #backToMenu {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            border: 1px solid #666;
+            color: white;
+            padding: 10px 20px;
+            font-family: 'Orbitron', monospace;
+            cursor: pointer;
+            z-index: 20;
+        }
+        
+        #backToMenu:hover {
+            background: rgba(0,0,0,0.9);
+            border-color: #00ff88;
+        }
+        
+        /* Retro scan lines effect */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 255, 136, 0.03) 2px,
+                rgba(0, 255, 136, 0.03) 4px
+            );
+        }
+    </style>
+</head>
+<body>
+    <canvas id="starfield"></canvas>
+    <div class="scanlines"></div>
+    
+    <div id="mainMenu">
+        <div class="logo">PIXELTHRUST</div>
+        <div class="subtitle">Inspired by Gravity Force 2</div>
+        
+        <div class="menu-options">
+            <button class="menu-button" id="startSinglePlayer">
+                Start Game (1 Player)
+            </button>
+            <button class="menu-button coming-soon" id="startMultiplayer">
+                Start Game (Multiplayer)
+                <div style="font-size: 0.8em; margin-top: 5px;">Coming Soon</div>
+            </button>
+            <button class="menu-button" id="levelEditor">
+                Level Editor
+            </button>
+        </div>
+    </div>
+    
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="1200" height="800"></canvas>
+        <button id="backToMenu">← Back to Menu</button>
+        <div id="ui">
+            <div>Fuel:</div>
+            <div id="fuelBar">
+                <div id="fuelFill" style="width: 100%"></div>
+            </div>
+            <div>Velocity: <span id="velocity">0</span></div>
+        </div>
+        <div id="controls">
+            SPACE: Thrust | A/D: Rotate | S/↑: Shoot | R: Restart
+        </div>
+    </div>
+    
+    <script src="js/Vector2.js"></script>
+    <script src="js/Ship.js"></script>
+    <script src="js/Particle.js"></script>
+    <script src="js/Bullet.js"></script>
+    <script src="js/Game.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/menu.js"></script>
+</body>
+</html> 
