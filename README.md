@@ -2,7 +2,7 @@
 
 A web-based implementation of the classic Gravity Force 2 style space lander game.
 
-## 🎮 [Play Now on GitHub Pages](https://johndowds.github.io/PixelThrust/)
+## 🎮 [Play Now on GitHub Pages](https://johnmdowds.github.io/PixelThrust/)
 
 **Play the game directly in your browser!** No downloads required.
 
