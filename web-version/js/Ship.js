@@ -36,11 +36,14 @@ class Ship {
     update(deltaTime, input) {
         // Handle input
         if (input.left) {
-            this.rotation -= this.rotationSpeed * deltaTime;
+            this.angularVelocity -= this.rotationSpeed * deltaTime;
         }
         if (input.right) {
-            this.rotation += this.rotationSpeed * deltaTime;
+            this.angularVelocity += this.rotationSpeed * deltaTime;
         }
+        
+        // Apply angular velocity to rotation
+        this.rotation += this.angularVelocity * deltaTime;
         
         // Update takeoff timer
         if (!this.isLanded) {
@@ -81,6 +84,14 @@ class Ship {
         if (!this.isLanded) {
             this.velocity = this.velocity.add(new Vector2(0, this.gravity).multiply(deltaTime));
         }
+        
+        // Apply drag to velocity (atmospheric resistance)
+        if (!this.isLanded) {
+            this.velocity = this.velocity.multiply(this.drag);
+        }
+        
+        // Apply angular drag to rotation
+        this.angularVelocity *= this.angularDrag;
         
         // Update position only if not landed
         if (!this.isLanded) {
@@ -197,6 +208,7 @@ class Ship {
         this.position = new Vector2(x, y);
         this.velocity = new Vector2(0, 0);
         this.rotation = 0;
+        this.angularVelocity = 0;
         this.fuel = this.maxFuel;
         this.isLanded = false;
         this.takeoffTime = 0; // Reset takeoff timer

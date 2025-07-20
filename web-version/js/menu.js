@@ -83,13 +83,19 @@ class MenuSystem {
     
     setupMenuButtons() {
         const startSinglePlayer = document.getElementById('startSinglePlayer');
+        const loadGame = document.getElementById('loadGame');
         const startMultiplayer = document.getElementById('startMultiplayer');
-        const levelEditor = document.getElementById('levelEditor');
         const backToMenu = document.getElementById('backToMenu');
+        const backToMainFromLevelSelect = document.getElementById('backToMainFromLevelSelect');
         
         // Single player button
         startSinglePlayer.addEventListener('click', () => {
             this.showGame();
+        });
+        
+        // Load game button
+        loadGame.addEventListener('click', () => {
+            this.showLevelSelect();
         });
         
         // Multiplayer button (disabled for now)
@@ -98,13 +104,18 @@ class MenuSystem {
             this.showComingSoonMessage();
         });
         
-        // Level editor button
-        levelEditor.addEventListener('click', () => {
-            window.location.href = 'editor.html';
+        // Back to main from level select
+        backToMainFromLevelSelect.addEventListener('click', () => {
+            this.hideLevelSelect();
         });
         
         // Back to menu button
         backToMenu.addEventListener('click', () => {
+            this.showMenu();
+        });
+        
+        // Listen for showMainMenu event from game
+        window.addEventListener('showMainMenu', () => {
             this.showMenu();
         });
         
@@ -139,6 +150,64 @@ class MenuSystem {
             window.game.resume();
         }
     }
+
+
+
+    showLevelSelect() {
+        document.getElementById('levelSelectContainer').style.display = 'flex';
+        this.updateLevelSelect();
+    }
+
+    hideLevelSelect() {
+        document.getElementById('levelSelectContainer').style.display = 'none';
+    }
+
+    updateLevelSelect() {
+        // Get highest unlocked level from localStorage
+        const highestUnlocked = parseInt(localStorage.getItem('highestUnlockedLevel') || '1');
+        
+        // Update level cards
+        document.querySelectorAll('.level-card').forEach(card => {
+            const level = parseInt(card.dataset.level);
+            const statusElement = card.querySelector('.level-status');
+            
+            if (level <= highestUnlocked) {
+                card.classList.remove('locked');
+                card.classList.add('unlocked');
+                statusElement.textContent = 'Unlocked';
+                statusElement.className = 'level-status unlocked';
+                
+                // Add click handler for unlocked levels
+                card.onclick = () => {
+                    this.startLevel(level);
+                };
+            } else {
+                card.classList.add('locked');
+                card.classList.remove('unlocked');
+                statusElement.textContent = 'Locked';
+                statusElement.className = 'level-status locked';
+                card.onclick = null;
+            }
+        });
+    }
+
+    startLevel(levelNumber) {
+        console.log(`🚀 Starting level ${levelNumber}...`);
+        this.hideLevelSelect();
+        
+        // Initialize game if needed
+        if (typeof window.game === 'undefined') {
+            window.game = new Game();
+        }
+        
+        // Set the level and start
+        window.game.currentLevel = levelNumber;
+        window.game.loadDefaultLevel();
+        window.game.start();
+        
+        // Show the game
+        this.showGame();
+    }
     
     showMenu() {
         document.getElementById('mainMenu').classList.remove('hidden');
@@ -153,6 +222,8 @@ class MenuSystem {
         if (typeof window.game !== 'undefined') {
             window.game.pause();
         }
+        
+
     }
     
     showComingSoonMessage() {
