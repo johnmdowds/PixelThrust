@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found - PixelThrust</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle at center, #001122 0%, #000000 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Orbitron', 'Courier New', monospace;
+            color: white;
+            text-align: center;
+        }
+        
+        .error-container {
+            max-width: 600px;
+            padding: 40px;
+        }
+        
+        .error-code {
+            font-size: 8em;
+            font-weight: 900;
+            color: #00ff88;
+            text-shadow: 0 0 20px #00ff88;
+            margin: 0;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #00ff88, 0 0 40px #00ff88; }
+            to { text-shadow: 0 0 30px #00ff88, 0 0 50px #00ff88; }
+        }
+        
+        .error-message {
+            font-size: 1.5em;
+            margin: 20px 0;
+            color: #ccc;
+        }
+        
+        .error-description {
+            font-size: 1.1em;
+            margin: 20px 0 40px 0;
+            color: #888;
+        }
+        
+        .back-button {
+            background: linear-gradient(45deg, #003366, #006699);
+            border: 2px solid #00ff88;
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-family: 'Orbitron', monospace;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .back-button:hover {
+            background: linear-gradient(45deg, #006699, #0099cc);
+            box-shadow: 0 0 20px #00ff88;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <h1 class="error-code">404</h1>
+        <div class="error-message">MISSION ABORTED</div>
+        <div class="error-description">
+            The coordinates you're looking for don't exist in this sector.<br>
+            Your ship has encountered an unknown region of space.
+        </div>
+        <a href="/" class="back-button">Return to Base</a>
+    </div>
+</body>
+</html> 
