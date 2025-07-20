@@ -8,15 +8,15 @@
 - [x] Main branch is `main` or `master`
 
 ### Files Structure
-- [x] `web-version/` contains all game files
-- [x] `web-version/index.html` is the main entry point
-- [x] All JavaScript files are in `web-version/js/`
-- [x] Favicon is added (`web-version/favicon.svg`)
-- [x] 404 page is created (`web-version/404.html`)
+- [x] Root directory contains all game files
+- [x] `index.html` is the main entry point in root
+- [x] All JavaScript files are in `js/` directory
+- [x] Favicon is added (`favicon.svg`)
+- [x] 404 page is created (`404.html`)
 
 ### GitHub Actions
 - [x] `.github/workflows/deploy.yml` is created
-- [x] Workflow deploys from `web-version/` directory
+- [x] Workflow deploys from root directory
 
 ### Documentation
 - [x] README.md is updated with GitHub Pages link

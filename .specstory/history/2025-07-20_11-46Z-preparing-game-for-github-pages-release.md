@@ -437,3 +437,150 @@ The deployment should work automatically once you push the changes and enable Gi
 
 ---
 
+_**User**_
+
+The readme works and seems to be hosted but when i click play in browser I get the 404
+
+---
+
+_**Assistant**_
+
+The issue is likely that GitHub Pages is looking for the main `index.html` file in the root directory, but your game files are in the `web-version/` subdirectory. Let me check the current structure and fix this.
+
+
+---
+
+<details>
+            <summary>Listed current directory • **11** results</summary>
+        
+| Name |
+|-------|
+| 📁 `.git` |
+| 📄 `DEPLOYMENT.md` |
+| 📄 `README.md` |
+| 📁 `web-version` |
+| 📁 `.github` |
+| 📄 `.DS_Store` |
+| 📁 `js` |
+| 📄 `index.html` |
+| 📄 `.gitignore` |
+| 📁 `.specstory` |
+| 📄 `.cursorindexingignore` |
+
+</details>
+
+---
+
+I see the issue! You have an `index.html` file in the root directory, but your game files are in the `web-version/` directory. The GitHub Actions workflow is configured to deploy from `web-version/`, but GitHub Pages might be serving the root `index.html` instead.
+
+Let me check what's in the root `index.html`:
+
+
+---
+
+Read file: index.html
+
+---
+
+I see the problem! You have duplicate `index.html` files - one in the root and one in `web-version/`. The GitHub Actions workflow is deploying from `web-version/`, but there might be confusion about which files are being served.
+
+Let me check if the root `index.html` is the same as the one in `web-version/`:
+
+
+---
+
+<details>
+            <summary>Grep search for "js/Vector2\.js" • **4** files</summary>
+        
+| File | Line | Match |
+|------|------|-------|
+| `file:///Users/johndowds/repos/PixelThrust/web-version/editor.html` | L209 | `<script src="js/Vector2.js"></script>` |
+| `file:///Users/johndowds/repos/PixelThrust/index.html` | L403 | `<script src="js/Vector2.js"></script>` |
+| `file:///Users/johndowds/repos/PixelThrust/web-version/index.html` | L422 | `<script src="js/Vector2.js"></script>` |
+| `file:///Users/johndowds/repos/PixelThrust/web-version/index.html` | L422 | `<script src="js/Vector2.js"></script>` |
+
+</details>
+
+---
+
+The issue is clear now! The root `index.html` is trying to load JavaScript files from `js/` directory, but when GitHub Pages deploys from `web-version/`, those files don't exist in the root. Let me fix this by either:
+
+1. Moving the game files to the root, or
+2. Creating a redirect from root to web-version
+
+Let me check what's in the root `js/` directory:
+
+
+---
+
+<details>
+            <summary>Listed directory js • **8** results</summary>
+        
+| Name |
+|-------|
+| 📄 `Particle.js` |
+| 📄 `editor-main.js` |
+| 📄 `menu.js` |
+| 📄 `Bullet.js` |
+| 📄 `Game.js` |
+| 📄 `Ship.js` |
+| 📄 `main.js` |
+| 📄 `Vector2.js` |
+
+</details>
+
+---
+
+Perfect! The JavaScript files exist in both locations. The simplest solution is to update the GitHub Actions workflow to deploy from the root directory instead of `web-version/`. Let me fix this:
+
+
+---
+
+
+
+---
+
+Now I need to make sure the root `index.html` has all the same improvements as the web-version one. Let me update it:
+
+
+---
+
+
+
+---
+
+Now I need to copy the favicon to the root directory as well:
+
+
+---
+
+```diff
+- 
++ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
++   <defs>
++     <linearGradient id="rocketGradient" x1="0%" y1="0%" x2="100%" y2="100%">
++       <stop offset="0%" style="stop-color:#00ff88;stop-opacity:1" />
++       <stop offset="100%" style="stop-color:#006699;stop-opacity:1" />
++     </linearGradient>
++   </defs>
++   <rect width="32" height="32" fill="#001122"/>
++   <path d="M16 4 L20 12 L24 16 L20 20 L16 28 L12 20 L8 16 L12 12 Z" fill="url(#rocketGradient)"/>
++   <circle cx="16" cy="16" r="2" fill="#ffffff"/>
++ </svg> 
+```
+
+---
+
+Now let me update the favicon path in the root index.html:
+
+
+---
+
+
+
+---
+
+
+
+---
+
